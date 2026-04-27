@@ -2,8 +2,8 @@
 package com.saboresglobales.inventario.service;
 import org.springframework.stereotype.Service;
 import java.util.*;
-import com.example.ms_inventario.repository.*;
-import com.example.ms_inventario.model.*;
+import com.saboresglobales.inventario.repository.*;
+import com.saboresglobales.inventario.model.*;
 
 @Service
 public class InventarioService {
