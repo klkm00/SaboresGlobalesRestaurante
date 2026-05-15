@@ -1,0 +1,4 @@
+com\app\inventario\service\InventarioService.class
+com\app\inventario\repository\InventarioRepository.class
+com\app\inventario\controller\InventarioController.class
+com\app\inventario\model\Inventario.class
