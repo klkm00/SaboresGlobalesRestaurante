@@ -1,10 +1,14 @@
 package com.saboresglobales.auth.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.saboresglobales.auth.model.UsuarioModel;
+import com.saboresglobales.auth.dto.LoginRequest;
+import com.saboresglobales.auth.dto.LoginResponse;
+import com.saboresglobales.auth.dto.RecuperarContrasenaRequest;
+import com.saboresglobales.auth.dto.UsuarioRequest;
+import com.saboresglobales.auth.dto.UsuarioResponse;
 import com.saboresglobales.auth.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import jakarta.validation.Valid;
@@ -15,63 +19,61 @@ import java.util.UUID;
 @RequestMapping("/api/usuario")
 @RequiredArgsConstructor
 public class UsuarioController {
-    @Autowired
+
     private final UsuarioService usuarioService;
 
-    // POST /api/usuario/registro - Registrar un nuevo usuario
+    // POST /api/usuario/registro
     @PostMapping("/registro")
-    public ResponseEntity<UsuarioModel> registrar(@RequestBody @Valid UsuarioModel usuario) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.registrar(usuario));
+    public ResponseEntity<UsuarioResponse> registrar(@RequestBody @Valid UsuarioRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.registrar(request));
     }
 
-    // POST /api/usuario/login - Iniciar sesión, retorna el token JWT
+    // POST /api/usuario/login
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestParam String correo,
-                                        @RequestParam String contrasena) {
-        return ResponseEntity.ok(usuarioService.login(correo, contrasena));
+    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest request) {
+        return ResponseEntity.ok(usuarioService.login(request));
     }
 
-    // GET /api/usuario - Listar todos (solo ADMIN)
+    // GET /api/usuario
     @GetMapping
-    public ResponseEntity<List<UsuarioModel>> listarTodos() {
+    public ResponseEntity<List<UsuarioResponse>> listarTodos() {
         return ResponseEntity.ok(usuarioService.listarTodos());
     }
 
-    // GET /api/usuario/{idUsuario} - Buscar por ID
+    // GET /api/usuario/{idUsuario}
     @GetMapping("/{idUsuario}")
-    public ResponseEntity<UsuarioModel> buscarPorId(@PathVariable UUID idUsuario) {
+    public ResponseEntity<UsuarioResponse> buscarPorId(@PathVariable UUID idUsuario) {
         return ResponseEntity.ok(usuarioService.buscarPorId(idUsuario));
     }
 
-    // GET /api/usuario/correo/{correo} - Buscar por correo
+    // GET /api/usuario/correo/{correo}
     @GetMapping("/correo/{correo}")
-    public ResponseEntity<UsuarioModel> buscarPorCorreo(@PathVariable String correo) {
+    public ResponseEntity<UsuarioResponse> buscarPorCorreo(@PathVariable String correo) {
         return ResponseEntity.ok(usuarioService.buscarPorCorreo(correo));
     }
 
-    // PUT /api/usuario/{idUsuario} - Actualizar datos
+    // PUT /api/usuario/{idUsuario}
     @PutMapping("/{idUsuario}")
-    public ResponseEntity<UsuarioModel> actualizar(@PathVariable UUID idUsuario,
-                                                   @RequestBody @Valid UsuarioModel usuario) {
-        return ResponseEntity.ok(usuarioService.actualizar(idUsuario, usuario));
+    public ResponseEntity<UsuarioResponse> actualizar(@PathVariable UUID idUsuario,
+                                                      @RequestBody @Valid UsuarioRequest request) {
+        return ResponseEntity.ok(usuarioService.actualizar(idUsuario, request));
     }
 
-    // PUT /api/usuario/{idUsuario}/desactivar - Desactivar cuenta
+    // PUT /api/usuario/{idUsuario}/desactivar
     @PutMapping("/{idUsuario}/desactivar")
-    public ResponseEntity<UsuarioModel> desactivar(@PathVariable UUID idUsuario) {
+    public ResponseEntity<UsuarioResponse> desactivar(@PathVariable UUID idUsuario) {
         return ResponseEntity.ok(usuarioService.desactivarCuenta(idUsuario));
     }
 
-    // POST /api/usuario/recuperar - Generar código de recuperación
+    // POST /api/usuario/recuperar
     @PostMapping("/recuperar")
     public ResponseEntity<String> generarCodigo(@RequestParam String correo) {
         return ResponseEntity.ok(usuarioService.generarCodigoRecuperacion(correo));
     }
 
-    // PUT /api/usuario/recuperar - Cambiar contraseña con el código
+    // PUT /api/usuario/recuperar
     @PutMapping("/recuperar")
-    public ResponseEntity<String> recuperarContrasena(@RequestParam String codigo,
-                                                      @RequestParam String nuevaContrasena) {
-        return ResponseEntity.ok(usuarioService.recuperarContrasena(codigo, nuevaContrasena));
+    public ResponseEntity<String> recuperarContrasena(@RequestBody @Valid RecuperarContrasenaRequest request) {
+        return ResponseEntity.ok(usuarioService.recuperarContrasena(request));
     }
 }
