@@ -1,9 +1,11 @@
 package com.saboresglobales.carrito.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.saboresglobales.carrito.dto.ItemCarritoRequest;
+import com.saboresglobales.carrito.dto.ItemCarritoResponse;
 import com.saboresglobales.carrito.model.CarritoModel;
 import com.saboresglobales.carrito.model.ItemCarritoModel;
+import com.saboresglobales.carrito.repository.CarritoRepository;
 import com.saboresglobales.carrito.repository.ItemCarritoRepository;
 import lombok.RequiredArgsConstructor;
 import java.util.List;
@@ -12,39 +14,57 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class ItemCarritoService {
-    @Autowired
-    
+
     private final ItemCarritoRepository itemCarritoRepository;
+    private final CarritoRepository carritoRepository;
     private final CarritoService carritoService;
 
-    //listar todos los items de un carrito
-    public List<ItemCarritoModel> listarItems(UUID idCarrito) {
-        return itemCarritoRepository.findByCarritoIdCarrito(idCarrito);
+    //convierte el model en response
+    private ItemCarritoResponse toResponse(ItemCarritoModel model) {
+        ItemCarritoResponse response = new ItemCarritoResponse();
+        response.setIdItemCarrito(model.getIdItemCarrito());
+        response.setProductoId(model.getProductoId());
+        response.setCantidad(model.getCantidad());
+        response.setPrecioUnitario(model.getPrecioUnitario());
+        response.setSubtotal(model.getSubtotal());
+        return response;
     }
 
-    //agregar un item al carrito
-    public ItemCarritoModel agregarItem(UUID idCarrito, UUID productoId, Integer cantidad, Double precioUnitario) {
-        CarritoModel carrito = carritoService.buscarPorId(idCarrito);
+    //listar todos los items de un carrito
+    public List<ItemCarritoResponse> listarItems(UUID idCarrito) {
+        return itemCarritoRepository.findByCarritoIdCarrito(idCarrito)
+                .stream()
+                .map(this::toResponse)
+                .toList();
+    }
 
-        //si el producto ya esta en el carrito, aumenta su cantidad
+    //agregar un producto al carrito
+    public ItemCarritoResponse agregarItem(UUID idCarrito, ItemCarritoRequest request) {
+        CarritoModel carrito = carritoRepository.findById(idCarrito)
+                .orElseThrow(() -> new RuntimeException("Carrito no encontrado: " + idCarrito));
+
+        //si el producto ya esta en el carrito, aumenta la cantidad de este
         ItemCarritoModel itemExistente = itemCarritoRepository
-                .findByCarritoIdCarritoAndProductoId(idCarrito, productoId);
+                .findByCarritoIdCarritoAndProductoId(idCarrito, request.getProductoId());
 
         if (itemExistente != null) {
-            itemExistente.setCantidad(itemExistente.getCantidad() + cantidad);
-            itemExistente.setSubtotal(itemExistente.getCantidad() * precioUnitario);
+            itemExistente.setCantidad(itemExistente.getCantidad() + request.getCantidad());
+            itemExistente.setSubtotal(itemExistente.getCantidad() * request.getPrecioUnitario());
             itemCarritoRepository.save(itemExistente);
-        } else {
-            itemExistente = new ItemCarritoModel();
-            itemExistente.setCarrito(carrito);
-            itemExistente.setProductoId(productoId);
-            itemExistente.setCantidad(cantidad);
-            itemExistente.setPrecioUnitario(precioUnitario);
-            itemExistente.setSubtotal(cantidad * precioUnitario);
-            itemCarritoRepository.save(itemExistente);
+            recalcularTotal(idCarrito);
+            return toResponse(itemExistente);
         }
+
+        ItemCarritoModel nuevoItem = new ItemCarritoModel();
+        nuevoItem.setCarrito(carrito);
+        nuevoItem.setProductoId(request.getProductoId());
+        nuevoItem.setCantidad(request.getCantidad());
+        nuevoItem.setPrecioUnitario(request.getPrecioUnitario());
+        nuevoItem.setSubtotal(request.getCantidad() * request.getPrecioUnitario());
+        itemCarritoRepository.save(nuevoItem);
+
         recalcularTotal(idCarrito);
-        return itemExistente;
+        return toResponse(nuevoItem);
     }
 
     //quitar un item del carrito
@@ -56,14 +76,14 @@ public class ItemCarritoService {
         recalcularTotal(idCarrito);
     }
 
-    //vaciar el carrito completo
+    //vaciar todos los items del carrito
     public void vaciarCarrito(UUID idCarrito) {
         List<ItemCarritoModel> items = itemCarritoRepository.findByCarritoIdCarrito(idCarrito);
         itemCarritoRepository.deleteAll(items);
         carritoService.actualizarTotal(idCarrito, 0.0);
     }
 
-    //recalcular el total del carrito sumando todos los items
+    //recalcula el total sumando todos los subtotales
     private void recalcularTotal(UUID idCarrito) {
         List<ItemCarritoModel> items = itemCarritoRepository.findByCarritoIdCarrito(idCarrito);
         Double total = items.stream()
