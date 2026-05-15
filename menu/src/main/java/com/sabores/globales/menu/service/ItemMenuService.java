@@ -2,10 +2,12 @@ package com.sabores.globales.menu.service;
 
 import java.util.List;
 import java.util.UUID;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.sabores.globales.menu.dto.ItemMenuRequest;
+import com.sabores.globales.menu.dto.ItemMenuResponse;
+import com.sabores.globales.menu.dto.OrigenResponse;
 import com.sabores.globales.menu.model.ItemMenuModel;
+import com.sabores.globales.menu.model.OrigenMenuModel;
 import com.sabores.globales.menu.repository.ItemMenuRepository;
 import com.sabores.globales.menu.repository.OrigenMenuRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,51 +15,90 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class ItemMenuService {
-    @Autowired
+
     private final ItemMenuRepository itemMenuRepository;
     private final OrigenMenuRepository origenMenuRepository;
 
-    //listar todos los items
-    public List<ItemMenuModel> listarTodos() {
-        return itemMenuRepository.findAll();
+    // Convierte model en response
+    private ItemMenuResponse toResponse(ItemMenuModel model) {
+        ItemMenuResponse response = new ItemMenuResponse();
+        response.setIdItem(model.getIdItem());
+        response.setProductoId(model.getProductoId());
+        response.setItemDisponible(model.getItemDisponible());
+
+        //incluye el origen completo en la respuesta
+        OrigenResponse origenResponse = new OrigenResponse();
+        origenResponse.setIdOrigen(model.getOrigenItem().getIdOrigen());
+        origenResponse.setNombreCarta(model.getOrigenItem().getNombreCarta());
+        origenResponse.setDescripcionCarta(model.getOrigenItem().getDescripcionCarta());
+        origenResponse.setCartaDisponible(model.getOrigenItem().getCartaDisponible());
+        response.setOrigen(origenResponse);
+
+        return response;
     }
 
-    //listar todos los items disponibles
-    public List<ItemMenuModel> listarDisponibles() {
-        return itemMenuRepository.findByItemDisponibleTrue();
+    //listar todos
+    public List<ItemMenuResponse> listarTodos() {
+        return itemMenuRepository.findAll()
+                .stream()
+                .map(this::toResponse)
+                .toList();
     }
 
-    //listar los items por origen
-    public List<ItemMenuModel> listarPorOrigen(UUID origenId) {
-        return itemMenuRepository.findByOrigenItemIdOrigenAndItemDisponibleTrue(origenId);
+    //listar disponibles
+    public List<ItemMenuResponse> listarDisponibles() {
+        return itemMenuRepository.findByItemDisponibleTrue()
+                .stream()
+                .map(this::toResponse)
+                .toList();
     }
 
-     //buscar item por id
-    public ItemMenuModel buscarPorId(UUID id) {
-        return itemMenuRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("ItemMenu no encontrado con id: " + id));
+    //listar por origen
+    public List<ItemMenuResponse> listarPorOrigen(UUID origenId) {
+        return itemMenuRepository.findByOrigenItemIdOrigenAndItemDisponibleTrue(origenId)
+                .stream()
+                .map(this::toResponse)
+                .toList();
     }
 
-    //guardar item nuevo
-    public ItemMenuModel guardar(ItemMenuModel item) {
-        // Verifica que el origen existe antes de guardar
-        origenMenuRepository.findById(item.getOrigenItem().getIdOrigen())
-                .orElseThrow(() -> new RuntimeException("Origen no encontrado"));
-        return itemMenuRepository.save(item);
+    //buscar por id
+    public ItemMenuResponse buscarPorId(UUID id) {
+        return toResponse(itemMenuRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("ItemMenu no encontrado: " + id)));
     }
 
-    //actualizar item
-    public ItemMenuModel actualizar(UUID id, ItemMenuModel datosNuevoItem) {
-        ItemMenuModel item = buscarPorId(id);
-        item.setOrigenItem(datosNuevoItem.getOrigenItem());
-        item.setProductoId(datosNuevoItem.getProductoId());
-        item.setItemDisponible(datosNuevoItem.getItemDisponible());
-        return itemMenuRepository.save(item);
+    //guardar
+    public ItemMenuResponse guardar(ItemMenuRequest request) {
+        OrigenMenuModel origen = origenMenuRepository.findById(request.getIdOrigen())
+                .orElseThrow(() -> new RuntimeException("Origen no encontrado: " + request.getIdOrigen()));
+
+        ItemMenuModel model = new ItemMenuModel();
+        model.setOrigenItem(origen);
+        model.setProductoId(request.getProductoId());
+        model.setItemDisponible(request.getItemDisponible() != null ? request.getItemDisponible() : true);
+
+        return toResponse(itemMenuRepository.save(model));
     }
 
-    //eliminar item de una categoria
+    //actualizar
+    public ItemMenuResponse actualizar(UUID id, ItemMenuRequest request) {
+        ItemMenuModel model = itemMenuRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("ItemMenu no encontrado: " + id));
+
+        OrigenMenuModel origen = origenMenuRepository.findById(request.getIdOrigen())
+                .orElseThrow(() -> new RuntimeException("Origen no encontrado: " + request.getIdOrigen()));
+
+        model.setOrigenItem(origen);
+        model.setProductoId(request.getProductoId());
+        model.setItemDisponible(request.getItemDisponible());
+
+        return toResponse(itemMenuRepository.save(model));
+    }
+
+    //eliminar
     public void eliminar(UUID id) {
-        buscarPorId(id);
+        itemMenuRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("ItemMenu no encontrado: " + id));
         itemMenuRepository.deleteById(id);
     }
 }
