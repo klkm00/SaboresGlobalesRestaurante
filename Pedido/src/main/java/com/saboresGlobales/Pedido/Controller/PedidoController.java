@@ -43,9 +43,7 @@ public class PedidoController {
         }
 
         @PostMapping
-        public ResponseEntity<PedidoResponseDTO>create( @Valid @RequestBody PedidoRequestDTO dto) {
-
-            
+        public ResponseEntity<PedidoResponseDTO>create(@Valid @RequestBody PedidoRequestDTO dto) {
             return ResponseEntity.status(201).body(pedidoService.guardar(dto));
         }
         

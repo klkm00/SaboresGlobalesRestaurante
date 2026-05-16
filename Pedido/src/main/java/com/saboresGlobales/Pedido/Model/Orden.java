@@ -24,6 +24,6 @@ public class Orden {
     private String Orden;
 
     @Column(nullable = false, length = 255)
-    private String description;
+    private String descripcion;
 
 }

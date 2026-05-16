@@ -24,10 +24,14 @@ public class PedidoService {
     private final OrdenRepository ordenRepository;
 
     private PedidoResponseDTO mapToDTO(Pedido pedido){
+        String ordenNombre = null;
+        if(pedido.getOrden() != null){
+            ordenNombre = pedido.getOrden().getOrden();
+        }
         return new PedidoResponseDTO(
             pedido.getId(),
             pedido.getEstado(),
-            pedido.getOrden().getOrden()
+            ordenNombre
         );
     }
 

@@ -27,9 +27,9 @@ public class DataInitializer implements CommandLineRunner{
         log.info(">>> DataInitializer: bd vacia detectada, insertando datos de prueba...");
     
         Orden orden = ordenRepository.save(
-            new Orden(null, "Orden 1", "Descripcion de la Orden")
+            new Orden(null, "Empanadas", "cantidad: 12, sabor: queso")
         );
-        Orden orden2 = ordenRepository.save( new Orden(null, "Orden 2", "Descripcion"));
+        Orden orden2 = ordenRepository.save( new Orden(null, "Tacos", "cantidad: 8, sabor: carnitas"));
 
         pedidoRepository.save(new Pedido(null, "Listo", orden));
         pedidoRepository.save(new Pedido(null, "En Preparacion", orden2));

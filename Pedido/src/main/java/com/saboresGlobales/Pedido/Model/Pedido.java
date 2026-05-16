@@ -29,7 +29,7 @@ public class Pedido {
     private String estado;
     
     @ManyToOne
-    @JoinColumn(name = "orden")
+    @JoinColumn(name = "orden_id")
     private Orden orden;
 
 }
