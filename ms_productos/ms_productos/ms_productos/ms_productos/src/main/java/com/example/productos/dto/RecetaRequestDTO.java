@@ -1,11 +1,19 @@
 package com.example.productos.dto;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * DTO para recibir los datos de creación de un ítem de Receta.
  * Separa la validación de la entidad JPA (buena práctica).
  */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class RecetaRequestDTO {
 
     @NotBlank(message = "El nombre del insumo es obligatorio")
@@ -17,20 +25,5 @@ public class RecetaRequestDTO {
     @NotNull(message = "El ID del producto es obligatorio")
     private Long productoId;
 
-    public RecetaRequestDTO() {}
-
-    public RecetaRequestDTO(String nombreInsumo, int cantidad, Long productoId) {
-        this.nombreInsumo = nombreInsumo;
-        this.cantidad = cantidad;
-        this.productoId = productoId;
-    }
-
-    public String getNombreInsumo() { return nombreInsumo; }
-    public void setNombreInsumo(String nombreInsumo) { this.nombreInsumo = nombreInsumo; }
-
-    public int getCantidad() { return cantidad; }
-    public void setCantidad(int cantidad) { this.cantidad = cantidad; }
-
-    public Long getProductoId() { return productoId; }
-    public void setProductoId(Long productoId) { this.productoId = productoId; }
+    
 }
