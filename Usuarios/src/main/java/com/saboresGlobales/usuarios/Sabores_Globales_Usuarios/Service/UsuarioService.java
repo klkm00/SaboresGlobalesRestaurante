@@ -28,7 +28,7 @@ public class UsuarioService {
         String nombreRol = null;
         if(usuario.getRol() != null){
         nombreRol = usuario.getRol().getNombre();
-    }
+        }
         return new UsuarioReponseDTO(
             usuario.getId(),
             usuario.getRut(),
