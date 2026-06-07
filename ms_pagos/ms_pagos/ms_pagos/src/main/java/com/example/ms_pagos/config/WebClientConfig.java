@@ -5,9 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
 
-/**
- * Configuración del WebClient para comunicarse con ms_pedidos.
- */
 @Configuration
 public class WebClientConfig {
 
@@ -15,9 +12,11 @@ public class WebClientConfig {
     private String pedidosUrl;
 
     @Bean
-    public WebClient webClientPedidos(WebClient.Builder builder) {
-        return builder
+    public WebClient webClientPedidos() {
+        return WebClient.builder()
                 .baseUrl(pedidosUrl)
                 .build();
     }
 }
+
+
