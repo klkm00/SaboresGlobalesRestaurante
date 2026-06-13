@@ -11,6 +11,7 @@ import com.SaboresGlobales.reportes.Reportes.DTO.ReportesResponseDTO;
 import com.SaboresGlobales.reportes.Reportes.Modelo.Reporte;
 import com.SaboresGlobales.reportes.Reportes.Repository.ReporteRepository;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -55,6 +56,11 @@ public class ReporteService {
         return repo.findByPedidoContainingIgnoreCase(pedido)
         .stream().map(this::maptoDTO).collect(Collectors.toList());
     }
+
+
+
+
+  
 
 
 }
