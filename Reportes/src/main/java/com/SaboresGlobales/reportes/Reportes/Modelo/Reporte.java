@@ -1,6 +1,5 @@
 package com.SaboresGlobales.reportes.Reportes.Modelo;
 
-import java.math.BigDecimal;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -22,7 +21,7 @@ public class Reporte {
     private Long id;
     @Column(nullable = false)
     private String pedido;
-    private BigDecimal pagos;
+    private double pagos;
     private Integer inventario;
     private String delivery;
 }
