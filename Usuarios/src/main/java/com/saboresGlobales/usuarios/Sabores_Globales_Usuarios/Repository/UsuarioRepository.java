@@ -10,7 +10,7 @@ import com.saboresGlobales.usuarios.Sabores_Globales_Usuarios.Modelo.Usuario;
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario,Long>  {
-
+    boolean existsByRut(String rut);
     List<Usuario> findByRutContainingIgnoreCase(String rut);
     List<Usuario> findByNombresContainingIgnoreCase(String nombres);
 

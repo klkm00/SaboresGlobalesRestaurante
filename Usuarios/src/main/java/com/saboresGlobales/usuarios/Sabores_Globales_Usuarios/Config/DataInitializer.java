@@ -40,10 +40,13 @@ public class DataInitializer implements CommandLineRunner {
                     new Rol(null, "Empleado"));
                    
                    
-            usuarioRepository.save(new Usuario(null, "111.222.333-4", "Maria", "Primera", "m.primera@admin.cl", prog));
-            usuarioRepository.save(new Usuario(null, "111.222.333-4", "Armando", "Casas", "m.primera@emp.cl", emp));
-            usuarioRepository.save(new Usuario(null, "111.222.333-4", "Susana", "Oria", "m.primera@cliente.cl", cliente));
+           usuarioRepository.save(new Usuario(null, "111.222.333-4", "Maria", "Primera", "m.primera@admin.cl", prog));
+            Usuario usuario = new Usuario(null, "22.333.444-5", "Armando", "Casas", "a.casasa@emp.cl", emp);
+            usuarioRepository.save(new Usuario(null, "444.555.666-7", "Susana", "Oria", "s.oria@cliente.cl", cliente));
+           usuarioRepository.save(usuario);
 
+            
+            
 
                   
         

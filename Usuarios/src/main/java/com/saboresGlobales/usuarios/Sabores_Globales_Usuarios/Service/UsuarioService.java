@@ -67,6 +67,10 @@ public class UsuarioService {
             dto.getCorreo(),
             rol
         );
+         if (uRepository.existsByRut(dto.getRut())) {
+        throw new RuntimeException("El rut ya existe");
+        }
+
         return mapToDto(uRepository.save(usuario));
     }
 
@@ -104,5 +108,6 @@ public class UsuarioService {
         return uRepository.findByNombresContainingIgnoreCase(nombres)
         .stream().map(this::mapToDto).collect(Collectors.toList());
     }
+    
     
 }         
