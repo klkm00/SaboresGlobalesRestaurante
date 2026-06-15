@@ -23,9 +23,9 @@ public void run(String... args){
 
     log.info(">>> DataInitializer: bd vacia detectada, insertando datos de prueba...");
 
-        deliveryRepository.save(new Delivery(null, "Elba Lazo",1500 , "Av.Tierra 403", "En Proceso"));
-        deliveryRepository.save(new Delivery(null, "Elsa pato",1500 , "Av.Luna 120", "Enviado"));
-        deliveryRepository.save(new Delivery(null, "Ines Perado",1500 , "Av.Estrella 201", "Recibido"));
+        ///deliveryRepository.save(new Delivery(null, "Elba Lazo",1500 , "Av.Tierra 403", "En Proceso"));
+        //deliveryRepository.save(new Delivery(null, "Elsa pato",1500 , "Av.Luna 120", "Enviado"));
+        //deliveryRepository.save(new Delivery(null, "Ines Perado",1500 , "Av.Estrella 201", "Recibido"));
 
 
         }
