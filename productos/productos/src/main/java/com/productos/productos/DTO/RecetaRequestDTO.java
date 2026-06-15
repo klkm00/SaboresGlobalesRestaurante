@@ -11,7 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RecetaRequestDTO {
- @NotBlank(message = "El nombre del insumo es obligatorio")
+    
+    @NotBlank(message = "El nombre del insumo es obligatorio")
     private String nombreInsumo;
 
     @Positive(message = "La cantidad debe ser mayor a 0")

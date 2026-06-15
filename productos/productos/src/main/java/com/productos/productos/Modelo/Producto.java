@@ -1,5 +1,6 @@
 package com.productos.productos.Modelo;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,10 +16,11 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "productos")
 public class Producto {
-  @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, length = 100)
     private String nombre;
     private String descripcion;
     private double precio;

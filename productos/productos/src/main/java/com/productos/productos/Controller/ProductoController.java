@@ -64,4 +64,11 @@ private final ProductoService service;
         service.eliminar(id);
         return ResponseEntity.noContent().build();
     }
+    @GetMapping("/nombre/{nombre}")
+    @Operation(summary = "Obtener productos por nombre", description = "Devuelve los detalles de un producto en especifico por su nombre")
+    public ResponseEntity<List<ProductoResponseDTO>> buscarPorNombre(
+        @PathVariable String nombre){
+            return ResponseEntity.ok(service.buscarPorNombre(nombre));
+        }
+    
 }

@@ -1,7 +1,9 @@
 package com.productos.productos.Controller;
 
+import com.productos.productos.Repository.RecetaRepository;
 import java.util.List;
 
+import org.hibernate.annotations.DialectOverride.GeneratedColumn;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Tag(name = "Recetas", description = "Operaciones CRUD para recetas")
 public class RecetaController {
- private final ProductoService productoService;
+
     private final RecetaService service;
 
     @GetMapping
@@ -36,10 +38,10 @@ public class RecetaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseEntity<RecetaResponseDTO>> obtenerPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(service.obtenerPorId(id)
+    public ResponseEntity<RecetaResponseDTO> obtenerPorId(@PathVariable Long id) {
+        return service.obtenerPorId(id)
         .map(ResponseEntity::ok)
-        .orElse(ResponseEntity.notFound().build()));
+        .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
@@ -50,16 +52,15 @@ public class RecetaController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar receta", description = "Actualiza los detalles de una receta existente por su ID")
-    public ResponseEntity<ResponseEntity<RecetaResponseDTO>> actualizar(@PathVariable Long id, @Valid @RequestBody RecetaRequestDTO dto) {
-        return ResponseEntity.ok(service.actualizar(id, dto)
-        .map(ResponseEntity::ok)
-        .orElse(ResponseEntity.notFound().build()));
+    public ResponseEntity<RecetaResponseDTO>actualizar(@PathVariable Long id, @Valid @RequestBody RecetaRequestDTO dto) {
+        return service.actualizar(id, dto).map(ResponseEntity::ok)
+        .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar receta", description = "Elimina una receta existente por su ID")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
-        if (productoService.obtenerPorId(id).isEmpty()) {
+        if (service.obtenerPorId(id).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         service.eliminar(id);
@@ -70,5 +71,11 @@ public class RecetaController {
     @Operation(summary = "Buscar recetas por nombre de insumo", description = "Devuelve una lista de recetas que contienen un insumo específico")
     public ResponseEntity<List<RecetaResponseDTO>> buscarPorNombreInsumo(@PathVariable String nombreInsumo) {
         return ResponseEntity.ok(service.obtenerRecetasPorNombreInsumo(nombreInsumo));
+    }
+
+    @GetMapping("/producto/{id}")
+    @Operation(summary = "Buscar receta por el id del producto", description = "Busca Receta por el ID de su producto")
+    public ResponseEntity<List<RecetaResponseDTO>> buscarPorProductoID(@PathVariable Long id){
+        return ResponseEntity.ok(service.obtenerRecetasPorProductoId(id));
     }
 }

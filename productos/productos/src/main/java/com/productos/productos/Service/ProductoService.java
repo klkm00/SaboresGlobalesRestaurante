@@ -2,6 +2,7 @@ package com.productos.productos.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -18,14 +19,20 @@ public class ProductoService {
 
     private final ProductoRepository productoRepo;
     
-
-    public List<Producto> buscarPorNombre(String nombre) {
-        return productoRepo.findByNombreContainingIgnoreCase(nombre);
+    private ProductoResponseDTO mapToDto(Producto producto){
+      
+        return new ProductoResponseDTO(
+            producto.getId(),
+            producto.getNombre(),
+            producto.getDescripcion(),
+            producto.getPrecio()
+        );
     }
+   
     public List<ProductoResponseDTO> obtenerTodos() {
         return productoRepo.findAll().stream()
-                .map(producto -> new ProductoResponseDTO(producto.getId(), producto.getNombre(), producto.getDescripcion(), producto.getPrecio()))
-                .collect(java.util.stream.Collectors.toList());
+                .map(this::mapToDto).collect(Collectors.toList());
+                
     }
 
     public ProductoResponseDTO crear(ProductoRequestDTO dto) {
@@ -38,7 +45,7 @@ public class ProductoService {
     }
 
     public Optional<ProductoResponseDTO> obtenerPorId(Long productoId) {
-        return productoRepo.findById(productoId).map(producto -> new ProductoResponseDTO(producto.getId(), producto.getNombre(), producto.getDescripcion(), producto.getPrecio()));
+        return productoRepo.findById(productoId).map(this::mapToDto);
     }
     public void eliminar(Long id) {
         productoRepo.deleteById(id);
@@ -52,5 +59,10 @@ public class ProductoService {
             Producto actualizado = productoRepo.save(producto);
             return new ProductoResponseDTO(actualizado.getId(), actualizado.getNombre(), actualizado.getDescripcion(), actualizado.getPrecio());
         });
+    }
+
+     public List<ProductoResponseDTO> buscarPorNombre(String nombre) {
+        return productoRepo.findByNombreContainingIgnoreCase(nombre)
+        .stream().map(this::mapToDto).collect(Collectors.toList());
     }
 }

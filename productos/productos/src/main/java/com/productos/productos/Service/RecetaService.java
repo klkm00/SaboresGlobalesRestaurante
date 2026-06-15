@@ -2,6 +2,8 @@ package com.productos.productos.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -17,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class RecetaService {
-private final RecetaRepository recetaRepo;
+    private final RecetaRepository recetaRepo;
     private final ProductoRepository productoRepo;
 
     private RecetaResponseDTO mapToDto(Receta receta){
@@ -72,7 +74,7 @@ private final RecetaRepository recetaRepo;
     }
 
    public List<RecetaResponseDTO> obtenerRecetasPorNombreInsumo(String nombreInsumo) {
-        return recetaRepo.findbynombreInsumoContainingIgnoreCase(nombreInsumo).stream()
+        return recetaRepo.findByNombreInsumoContainsIgnoreCase(nombreInsumo).stream()
                 .map(this::mapToDto)
                 .collect(java.util.stream.Collectors.toList());
     }
@@ -82,5 +84,10 @@ private final RecetaRepository recetaRepo;
                 .map(this::mapToDto)
                 .collect(java.util.stream.Collectors.toList());
 
+    }
+
+    public List<RecetaResponseDTO> buscarPorProductoID(Long productoId){
+        return recetaRepo.findByProductoId(productoId)
+        .stream().map(this::mapToDto).collect(Collectors.toList());
     }
 }

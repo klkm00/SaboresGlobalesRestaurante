@@ -1,6 +1,7 @@
 package com.productos.productos.DTO;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductoRequestDTO {
-    @NotBlank(message = "El nombre del producto es obligatorio")
+    @NotNull(message = "El nombre del producto es obligatorio")
     private String nombre;
 
     @NotBlank(message = "La descripción del producto es obligatoria")
