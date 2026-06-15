@@ -38,7 +38,7 @@ public class OrdenService {
            
     }
 
-    public Optional<OrdenResponseDTO> actualizar(Long id, OrdenResponseDTO dto) {
+    public Optional<OrdenResponseDTO> actualizar(Long id, OrdenRequestDTO dto) {
         return ordenRepository.findById(id)
         .map(orden -> {
             orden.setOrden(dto.getOrden());
@@ -51,4 +51,6 @@ public class OrdenService {
     public void eliminar(Long id) {
         ordenRepository.deleteById(id);
     }
+
+   
 }

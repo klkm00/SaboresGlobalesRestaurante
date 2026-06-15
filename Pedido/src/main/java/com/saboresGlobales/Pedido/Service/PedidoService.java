@@ -64,7 +64,7 @@ public class PedidoService {
     public Optional<PedidoResponseDTO> actualizar(Long id, PedidoRequestDTO dto){
         return pedidoRepository.findById(id).map(existente ->{
             Orden orden = ordenRepository
-            .findById(dto.getOrdenId()).orElseThrow(() -> new RuntimeException("ROL NO ENCONTRADO CON ID"+ dto.getOrdenId()));
+            .findById(dto.getOrdenId()).orElseThrow(() -> new RuntimeException("ORDEN NO ENCONTRADA CON ID"+ dto.getOrdenId()));
             existente.setEstado(dto.getEstado());
             existente.setOrden(orden);
             return mapToDTO(pedidoRepository.save(existente));

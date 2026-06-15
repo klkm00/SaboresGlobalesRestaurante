@@ -55,8 +55,7 @@ public class OrdenController {
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar una orden", description = "Actualiza los datos de una orden de pedido específica por su ID")
     public ResponseEntity<OrdenResponseDTO> actualizar(@PathVariable Long id,
-         @RequestBody OrdenResponseDTO dto) {
-       
+        @RequestBody OrdenRequestDTO dto) {
         Optional<OrdenResponseDTO> ordenActualizada = ordenService.actualizar(id, dto);
         return ordenActualizada.map(ResponseEntity::ok)
                              .orElse(ResponseEntity.notFound().build());
