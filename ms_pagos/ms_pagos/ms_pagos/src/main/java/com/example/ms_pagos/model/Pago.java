@@ -40,7 +40,7 @@ public class Pago {
     private LocalDateTime fechaPago;
 
     // Código de transacción devuelto por el banco (puede ser null si falló)
-    @Column(name = "codigo_transaccion", length = 100)
+    @Column(name = "codigo_transaccion", length = 100, unique = true)
     private String codigoTransaccion;
 
     public enum EstadoPago {

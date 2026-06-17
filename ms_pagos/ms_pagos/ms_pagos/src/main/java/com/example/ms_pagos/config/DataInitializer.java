@@ -1,5 +1,7 @@
 package com.example.ms_pagos.config;
 
+import java.time.LocalDateTime;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +29,7 @@ public class DataInitializer  implements CommandLineRunner {
 
             Pago pago1 = new Pago(null, 1L, 100.0, Pago.EstadoPago.CONFIRMADO, "TARJETA", null, "TXN12345");
             Pago pago2 = new Pago(null, 2L, 50.0, Pago.EstadoPago.PENDIENTE, "EFECTIVO", null, "TXN67890");
-            Pago pago3 = new Pago(null, 1L, 25.0, Pago.EstadoPago.FALLIDO, "TRANSFERENCIA", null, "TXN54321");
+            Pago pago3 = new Pago(null, 1L, 25.0, Pago.EstadoPago.FALLIDO, "TRANSFERENCIA", LocalDateTime.now(), "TXN54321");
 
             pagoRepository.save(pago1);
             pagoRepository.save(pago2);
