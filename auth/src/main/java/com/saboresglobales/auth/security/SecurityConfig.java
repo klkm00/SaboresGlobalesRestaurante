@@ -27,15 +27,20 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/usuario/registro",
-                                 "/api/usuario/login",
-                                 "/api/usuario/recuperar",
-                                 "/h2-console/**").permitAll()  // rutas públicas
-                .anyRequest().authenticated()                    // el resto requiere token
+                .requestMatchers(
+                    "/api/usuario/registro",
+                    "/api/usuario/login",
+                    "/api/usuario/recuperar",
+                    "/h2-console/**",
+                    "/swagger-ui/**",
+                    "/swagger-ui.html",
+                    "/v3/api-docs/**"
+                ).permitAll()
+                .anyRequest().authenticated()
             )
-            .headers(headers -> headers.frameOptions(frame -> frame.disable())) // para H2
+            .headers(headers -> headers.frameOptions(frame -> frame.disable()))
             .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // sin sesiones
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
