@@ -1,19 +1,18 @@
 package com.sabores.globales.menu.config;
-
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.info.Info;
-
 @Configuration
 public class SwaggerConfig {
+
     @Bean
-    public OpenAPI customOpenAPI() {
+    public OpenAPI openAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Menú API")
-                        .version("1.0")
-                        .description("API para gestionar el menú del restaurante Sabores Globales"));
+                        .title("MS Menú - Sabores Globales")
+                        .description("API para la gestión del menú del restaurante")
+                        .version("1.0.0"));
     }
 }

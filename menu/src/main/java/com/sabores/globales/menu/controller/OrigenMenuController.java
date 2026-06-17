@@ -6,49 +6,59 @@ import org.springframework.web.bind.annotation.*;
 import com.sabores.globales.menu.dto.OrigenRequest;
 import com.sabores.globales.menu.dto.OrigenResponse;
 import com.sabores.globales.menu.service.OrigenMenuService;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/origen")
 @RequiredArgsConstructor
-@Tag(name = "OrigenMenu", description = "Operaciones relacionadas con los orígenes del menú")
+@Tag(name = "Origen", description = "Gestión de orígenes culinarios del menú")
 public class OrigenMenuController {
 
     private final OrigenMenuService origenMenuService;
 
+    @Operation(summary = "Listar orígenes activos", description = "Retorna todos los orígenes culinarios activos")
+    @ApiResponse(responseCode = "200", description = "Lista obtenida correctamente")
     @GetMapping
-    @Operation(summary = "Listar todos los orígenes", description = "Obtiene una lista de todos los orígenes del menú, incluyendo los que no están activos actualmente.")
     public ResponseEntity<List<OrigenResponse>> listarActivos() {
         return ResponseEntity.ok(origenMenuService.listarActivos());
     }
 
+    @Operation(summary = "Buscar origen por ID")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Origen encontrado"),
+        @ApiResponse(responseCode = "400", description = "Origen no encontrado")
+    })
     @GetMapping("/{id}")
-    @Operation(summary = "Buscar origen por ID", description = "Obtiene un origen del menú por su ID.")
     public ResponseEntity<OrigenResponse> buscarPorId(@PathVariable UUID id) {
         return ResponseEntity.ok(origenMenuService.buscarPorId(id));
     }
 
+    @Operation(summary = "Crear un nuevo origen culinario")
+    @ApiResponse(responseCode = "201", description = "Origen creado correctamente")
     @PostMapping
-    @Operation(summary = "Crear origen", description = "Crea un nuevo origen para el menú.")
     public ResponseEntity<OrigenResponse> guardar(@RequestBody @Valid OrigenRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(origenMenuService.guardar(request));
     }
 
+    @Operation(summary = "Actualizar un origen existente")
+    @ApiResponse(responseCode = "200", description = "Origen actualizado correctamente")
     @PutMapping("/{id}")
-    @Operation(summary = "Actualizar origen", description = "Actualiza un origen existente del menú.")
     public ResponseEntity<OrigenResponse> actualizar(@PathVariable UUID id,
                                                      @RequestBody @Valid OrigenRequest request) {
         return ResponseEntity.ok(origenMenuService.actualizar(id, request));
     }
 
+    @Operation(summary = "Eliminar un origen por ID")
+    @ApiResponse(responseCode = "204", description = "Origen eliminado correctamente")
     @DeleteMapping("/{id}")
-    @Operation(summary = "Eliminar origen", description = "Elimina un origen del menú.")
     public ResponseEntity<Void> eliminar(@PathVariable UUID id) {
         origenMenuService.eliminar(id);
         return ResponseEntity.noContent().build();
