@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 import com.example.ms_inventario.repository.*;
 
-
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import com.example.ms_inventario.dto.InventarioRequestDTO;
@@ -24,6 +24,7 @@ public class InventarioService {
             inventario.getInsumo(), 
             inventario.getStock());
     }
+
 
     public List<InventarioResponseDTO> ObtenerTodos(){
         return repo.findAll().stream().map(this::maptoDTO).toList();
@@ -55,6 +56,9 @@ public class InventarioService {
     public void eliminar(Long id){
         repo.deleteById(id);
     }
+
+
+   
 
 
 }
