@@ -10,82 +10,95 @@ import com.saboresglobales.auth.dto.RecuperarContrasenaRequest;
 import com.saboresglobales.auth.dto.UsuarioRequest;
 import com.saboresglobales.auth.dto.UsuarioResponse;
 import com.saboresglobales.auth.service.UsuarioService;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/usuario")
 @RequiredArgsConstructor
-@Tag(name = "UsuarioController", description = "Controlador para la gestión de usuarios y autenticación")
+@Tag(name = "Usuario", description = "Gestión de usuarios, autenticación y recuperación de contraseña")
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
 
-    // POST /api/usuario/registro
+    @Operation(summary = "Registrar un nuevo usuario")
+    @ApiResponse(responseCode = "201", description = "Usuario registrado correctamente")
     @PostMapping("/registro")
-    @Operation(summary = "Registrar un nuevo usuario", description = "Permite registrar un nuevo usuario en el sistema")
     public ResponseEntity<UsuarioResponse> registrar(@RequestBody @Valid UsuarioRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.registrar(request));
     }
 
-    // POST /api/usuario/login
+    @Operation(summary = "Iniciar sesión", description = "Retorna un token JWT con el rol y datos del usuario")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Login exitoso, retorna token JWT"),
+        @ApiResponse(responseCode = "400", description = "Credenciales incorrectas")
+    })
     @PostMapping("/login")
-    @Operation(summary = "Iniciar sesión", description = "Permite iniciar sesión en el sistema")
     public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest request) {
         return ResponseEntity.ok(usuarioService.login(request));
     }
 
-    // GET /api/usuario
+    @Operation(summary = "Listar todos los usuarios", description = "Solo accesible con token JWT de ADMIN")
+    @ApiResponse(responseCode = "200", description = "Lista obtenida correctamente")
     @GetMapping
-    @Operation(summary = "Listar todos los usuarios", description = "Permite listar todos los usuarios del sistema")
     public ResponseEntity<List<UsuarioResponse>> listarTodos() {
         return ResponseEntity.ok(usuarioService.listarTodos());
     }
 
-    // GET /api/usuario/{idUsuario}
+    @Operation(summary = "Buscar usuario por ID")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Usuario encontrado"),
+        @ApiResponse(responseCode = "400", description = "Usuario no encontrado")
+    })
     @GetMapping("/{idUsuario}")
-    @Operation(summary = "Buscar usuario por ID", description = "Permite buscar un usuario específico por su ID")
     public ResponseEntity<UsuarioResponse> buscarPorId(@PathVariable UUID idUsuario) {
         return ResponseEntity.ok(usuarioService.buscarPorId(idUsuario));
     }
 
-    // GET /api/usuario/correo/{correo}
+    @Operation(summary = "Buscar usuario por correo")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Usuario encontrado"),
+        @ApiResponse(responseCode = "400", description = "Usuario no encontrado")
+    })
     @GetMapping("/correo/{correo}")
-    @Operation(summary = "Buscar usuario por correo", description = "Permite buscar un usuario específico por su correo electrónico")
     public ResponseEntity<UsuarioResponse> buscarPorCorreo(@PathVariable String correo) {
         return ResponseEntity.ok(usuarioService.buscarPorCorreo(correo));
     }
 
-    // PUT /api/usuario/{idUsuario}
+    @Operation(summary = "Actualizar datos del usuario")
+    @ApiResponse(responseCode = "200", description = "Usuario actualizado correctamente")
     @PutMapping("/{idUsuario}")
-    @Operation(summary = "Actualizar usuario", description = "Permite actualizar la información de un usuario específico")
     public ResponseEntity<UsuarioResponse> actualizar(@PathVariable UUID idUsuario,
                                                       @RequestBody @Valid UsuarioRequest request) {
         return ResponseEntity.ok(usuarioService.actualizar(idUsuario, request));
     }
 
-    // PUT /api/usuario/{idUsuario}/desactivar
+    @Operation(summary = "Desactivar cuenta de usuario")
+    @ApiResponse(responseCode = "200", description = "Cuenta desactivada correctamente")
     @PutMapping("/{idUsuario}/desactivar")
-    @Operation(summary = "Desactivar cuenta de usuario", description = "Permite desactivar la cuenta de un usuario específico")
     public ResponseEntity<UsuarioResponse> desactivar(@PathVariable UUID idUsuario) {
         return ResponseEntity.ok(usuarioService.desactivarCuenta(idUsuario));
     }
 
-    // POST /api/usuario/recuperar
+    @Operation(summary = "Generar código de recuperación de contraseña")
+    @ApiResponse(responseCode = "200", description = "Código generado correctamente")
     @PostMapping("/recuperar")
-    @Operation(summary = "Generar código de recuperación", description = "Permite generar un código de recuperación para restablecer la contraseña")
     public ResponseEntity<String> generarCodigo(@RequestParam String correo) {
         return ResponseEntity.ok(usuarioService.generarCodigoRecuperacion(correo));
     }
 
-    // PUT /api/usuario/recuperar
+    @Operation(summary = "Cambiar contraseña con el código de recuperación")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Contraseña actualizada correctamente"),
+        @ApiResponse(responseCode = "400", description = "Código inválido")
+    })
     @PutMapping("/recuperar")
-    @Operation(summary = "Recuperar contraseña", description = "Permite recuperar la contraseña de un usuario específico")
     public ResponseEntity<String> recuperarContrasena(@RequestBody @Valid RecuperarContrasenaRequest request) {
         return ResponseEntity.ok(usuarioService.recuperarContrasena(request));
     }

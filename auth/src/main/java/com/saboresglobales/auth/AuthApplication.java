@@ -13,3 +13,5 @@ public class AuthApplication {
         SpringApplication.run(AuthApplication.class, args);
     }
 }
+
+//http://localhost:8083/swagger-ui/index.html
