@@ -24,7 +24,7 @@ import com.SaboresGlobales.reportes.Reportes.Modelo.Reporte;
 import com.SaboresGlobales.reportes.Reportes.Repository.ReporteRepository;
 
 @ExtendWith(MockitoExtension.class)
-class ReporteServiceTest {
+public class ReporteServiceTest {
 
     @Mock
     private ReporteRepository repo;
