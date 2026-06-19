@@ -22,6 +22,6 @@ public class Rol {
     private Long id;
     @Column(nullable = false,length = 100)
     private String nombre;
-
+    
     
 }

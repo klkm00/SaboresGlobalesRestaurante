@@ -44,7 +44,7 @@ public class UsuarioControllerTest {
     private Usuario usuario;
     private Rol rol;
 
-     @BeforeEach
+    @BeforeEach
     void SetUp(){
     rol= new Rol();
     rol.setId(1L);
@@ -131,9 +131,10 @@ public class UsuarioControllerTest {
             1L,
             "12.345.678-9",
             "Elba",
-            "Lazo", "elbalazo@clientes.cl", "CLIENTE"
-
-    );
+            "Lazo", 
+            "elbalazo@clientes.cl", 
+            "CLIENTE"
+        );
 
     when(usuarioService.guardar(any(UsuarioRequestDTO.class)))
             .thenReturn(response);

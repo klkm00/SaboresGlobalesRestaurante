@@ -1,7 +1,6 @@
 package com.saboresGlobales.usuarios.Sabores_Globales_Usuarios.Service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -124,7 +123,7 @@ public class UsuarioServiceTest {
             service.buscarPorRol(1L);
 
     assertEquals(1, resultado.size());
-    assertEquals("11.222.333-4", resultado.get(0).getRut());
+    assertEquals(1L,resultado.get(0).getId());
     
     }
 
@@ -186,9 +185,10 @@ public class UsuarioServiceTest {
             1L, 
             "11.222.333-4", 
             "Elba",
-             "Lazo", 
-             "elbalazo@cliente.cl", 
-             rol);
+            "Lazo", 
+            "elbalazo@cliente.cl", 
+            rol
+        );
 
         when(repo.save(any(Usuario.class)))
                     .thenReturn(usuario);
@@ -203,7 +203,7 @@ public class UsuarioServiceTest {
 
     @Test
     public void testObtenerTodos() {
-      Rol rol = new Rol();
+        Rol rol = new Rol();
         rol.setId(2L);
         rol.setNombre("CLIENTE");
         Usuario usuario = new Usuario(
@@ -236,12 +236,12 @@ public class UsuarioServiceTest {
 
         Usuario usuario = new Usuario(
             1L,
-           "11.222.333-k",
-       "Elsa",
-     "Pato",
-        "elsa@correo.cl",
-                rol
-                );
+            "11.222.333-k",
+            "Elsa",
+            "Pato",
+            "elsa@correo.cl",
+            rol
+            );
    
 
         when(repo.findById(id))

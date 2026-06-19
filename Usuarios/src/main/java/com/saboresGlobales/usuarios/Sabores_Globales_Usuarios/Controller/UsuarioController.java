@@ -32,7 +32,7 @@ public class UsuarioController {
     private final UsuarioService usuarioService;
     @GetMapping
     @Operation(summary = "Listar usuarios", description = "Obtiene una lista de todos los usuarios registrados")
- public ResponseEntity<List<UsuarioReponseDTO>> obtenerTodos(){
+    public ResponseEntity<List<UsuarioReponseDTO>> obtenerTodos(){
     return ResponseEntity.ok(usuarioService.obtenerTodos());
  }
  @GetMapping("/{id}")
