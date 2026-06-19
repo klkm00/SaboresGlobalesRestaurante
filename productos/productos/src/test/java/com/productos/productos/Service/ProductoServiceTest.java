@@ -67,7 +67,7 @@ public class ProductoServiceTest {
             1L, 
             nombre, 
             "Pizza Italiana con peperoni", 
-            0
+            1
         );
 
         when(productoRepository.findByNombreContainingIgnoreCase(nombre))
